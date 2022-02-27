@@ -29,8 +29,6 @@ int main(void)
         THD();
         initial_lcd();
         clear_screen();
-//        display_GB2312_string(1,1,"2022F137×é");
-//        display_GB2312_string(3,1,"Ò×Àþ¾ê£¬ÕÔÃ¯ÇÕ");
         display_GB2312_string(5,1,"THD:");
         display_float(5,32,temp);
         display_GB2312_string(5,75,"%");

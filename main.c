@@ -18,7 +18,6 @@ int main(void)
     P2DIR |= BIT0+BIT1+BIT2+BIT3+BIT4;
 
     int i;
-    float temp;
     while(1)
     {
         for(i=0;i<128;i++) StartADCConvert();
@@ -30,7 +29,7 @@ int main(void)
         initial_lcd();
         clear_screen();
         display_GB2312_string(5,1,"THD:");
-        display_float(5,32,temp);
+        display_float(5,32,thd);
         display_GB2312_string(5,75,"%");
         display_GB2312_string(7,1,"Vpp:");
         display_float(7,32,vpp);

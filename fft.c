@@ -75,14 +75,14 @@ float cos_fft128(unsigned char i)
         return 0;
 }
 
-//¸´ÊıFFT£¬Ö´ĞĞ64Î»
+// å¤æ•°FFTï¼Œæ‰§è¡Œ64ä½
 void FFT(int dataR[],int dataI[])
 {
-    //´Ó×óµ½ÓÒ½øÎ»·¨·´Ğò
+    // ä»å·¦åˆ°å³è¿›ä½æ³•ååº
     unsigned int B,L,p,r,i,j, k;
     int Temp;
     float Tr, Ti;
-    j=FFTN/2;//×î¸ßÎ»È¨Öµ
+    j=FFTN/2; // æœ€é«˜ä½æƒå€¼
     for(i=1;i<=FFTN-2;i++)
     {
         if(i<j)
@@ -95,40 +95,39 @@ void FFT(int dataR[],int dataI[])
             dataI[i]=dataI[j];
             dataI[j]=Temp;
         }
-        k=FFTN/2;//´Ó×î¸ßÎ»¿ªÊ¼ÅĞ¶Ï
-        while(1)//´Ó¸ßµ½µÍÎ»ÅĞ¶Ï
+        k=FFTN/2; // ä»æœ€é«˜ä½å¼€å§‹åˆ¤æ–­
+        while(1) // ä»é«˜åˆ°ä½ä½åˆ¤æ–­
         {
-            if(j<k)//¸ÃÎ»Îª0
+            if(j<k) // è¯¥ä½ä¸º0
             {
-                j=j+k;//ÖÃ1
+                j=j+k; // ç½®1
                 break;
             }
-            else//¸ÃÎ»Îª1
+            else // è¯¥ä½ä¸º1
             {
-                j=j-k;//ÖÃ0
+                j=j-k; / /ç½®0
                 k=k/2;
             }
         }
-//        _nop();
     }
 
-    for(L=1; L<=M;L++)  //FFTµûĞÎ¼¶ÊıL´Ó1--M
+    for(L=1; L<=M;L++) // FFTè¶å½¢çº§æ•°Lä»1--M
     {
-      /*µÚL¼¶µÄÔËËã*/
-      //ÏÈ¼ÆËãÒ»ÏÂ¼ä¸ô B = 2^(L-1);
-      B = Pow2M[L-1];//7¼¶Ê±£¬B=64
+      /* ç¬¬Lçº§çš„è¿ç®— */
+      // å…ˆè®¡ç®—ä¸€ä¸‹é—´éš” B = 2^(L-1);
+      B = Pow2M[L-1]; // 7çº§æ—¶ï¼ŒB=64
       for(j=0; j<B;j++)
       {
-          /*Í¬ÖÖµûĞÎÔËËã*/
-        //ÏÈ¼ÆËãÔöÁ¿k=2^(M-L)
-        k = Pow2M[M-L];//7¼¶Ê±£¬k=1
+        /* åŒç§è¶å½¢è¿ç®— */
+        // å…ˆè®¡ç®—å¢é‡k=2^(M-L)
+        k = Pow2M[M-L]; // 7çº§æ—¶ï¼Œk=1
 
-        //¼ÆËãĞı×ªÖ¸Êıp£¬ÔöÁ¿ÎªkÊ±£¬Ôòp=j*k
+        // è®¡ç®—æ—‹è½¬æŒ‡æ•°pï¼Œå¢é‡ä¸ºkæ—¶ï¼Œåˆ™p=j*k
         p=j*k;
         for(i = 0; i <= k - 1; i++)
         {
-          /*½øĞĞµûĞÎÔËËã*/
-          //Êı×éÏÂ±ê¶¨Îªr
+            /* è¿›è¡Œè¶å½¢è¿ç®— */
+            // æ•°ç»„ä¸‹æ ‡å®šä¸ºr
             r = j + 2 * B * i;
             Tr=dataR[r+B]*cos_fft64(p) + dataI[r+B]*sin_fft64(p);
             Ti=dataI[r+B]*cos_fft64(p) - dataR[r+B]*sin_fft64(p);
@@ -142,7 +141,8 @@ void FFT(int dataR[],int dataI[])
     }
 }
 
-void FFTR_SEQ()//·ÖÆæÅ¼£¬ÖØ¸´ÀûÓÃ´¢´æ¿Õ¼ä
+// åˆ†å¥‡å¶ï¼Œé‡å¤åˆ©ç”¨å‚¨å­˜ç©ºé—´
+void FFTR_SEQ()
 {
     unsigned char i;
     int temp[FFTN];
@@ -170,13 +170,13 @@ void FFTR()
     int *dataR;
     dataR = (int*)adcbuff;
     int *dataI;
-    dataI= (int*)&(adcbuff[64]);//ÖØ¸´ÀûÓÃÊı×é
-    //FFTR_SEQ();
+    dataI= (int*)&(adcbuff[64]); // é‡å¤åˆ©ç”¨æ•°ç»„
+    // FFTR_SEQ();
     FFT(dataR, dataI);
 
-    //ÇóX1(k)ºÍX2(k)
+    // æ±‚X1(k)å’ŒX2(k)
     float x1R, x2R, x1I, x2I, x1I1, x2I1;
-    for (k = 0; k <= FFTRN / 4; k++)//32¸öÑ­»·£¬¼ÆËã64µã,ÔÚ32´ÎÒÔºó£¬ÓÉÓÚÖØ¸´ÀûÓÃÊı×é£¬»á³öÏÖÊı¾İ¸²¸Ç£¬ËğÊ§dataR£¬dataIµÄÇ°32Î»£¬Òò´ËĞèÒªÔÚ32´ÎÄÚ½«ºó32Î»¼ÆËãÍê³É
+    for (k = 0; k <= FFTRN / 4; k++) // 32ä¸ªå¾ªç¯ï¼Œè®¡ç®—64ç‚¹,åœ¨32æ¬¡ä»¥åï¼Œç”±äºé‡å¤åˆ©ç”¨æ•°ç»„ï¼Œä¼šå‡ºç°æ•°æ®è¦†ç›–ï¼ŒæŸå¤±dataRï¼ŒdataIçš„å‰32ä½ï¼Œå› æ­¤éœ€è¦åœ¨32æ¬¡å†…å°†å32ä½è®¡ç®—å®Œæˆ
         {
             if (k == 0)
             {
@@ -195,14 +195,14 @@ void FFTR()
             }
             else
             {
-                //Ç°32Î»
+                // å‰32ä½
                 x1R = (dataR[k] + dataR[FFTRN / 2 - k]) / 2.0f;
                 x1I = (dataI[k] - dataI[FFTRN / 2 - k]) / 2.0f;
                 x2R = (dataI[k] + dataI[FFTRN / 2 - k]) / 2.0f;
                 x2I = (dataR[FFTRN / 2 - k] - dataR[k]) / 2.0f;
 
 
-                //ºó32Î»
+                // å32ä½
                 //x1R1 = (dataR[FFTRN / 2 - k] + dataR[k]) / 2.0;
                 x1I1 = (dataI[FFTRN / 2 - k] - dataI[k]) / 2.0f;
                 //x2R1 = (dataI[FFTRN / 2 - k] + dataI[k]) / 2.0;
@@ -219,7 +219,7 @@ void FFTR()
                 Ti = x1I - Ti;
                 adcbuff[FFTRN/2+k] = sqrtf(Tr * Tr + Ti * Ti);
 
-                //Òò×ÓÖĞcos¹ØÓÚFFTRN / 2 ²¢²»¶Ô³Æ£¡£¡
+                // å› å­ä¸­coså…³äºFFTRN / 2 å¹¶ä¸å¯¹ç§°ï¼ï¼
                 Tr = x2R * cos_fft128(FFTRN / 2 -k) + x2I1 * sin_fft128(FFTRN / 2 -k);
                 Ti = x2I1 * cos_fft128(FFTRN / 2 -k) - x2R * sin_fft128(FFTRN / 2 -k);
                 Tr = x1R + Tr;
@@ -229,15 +229,15 @@ void FFTR()
                 Tr = x1R - Tr;
                 Ti = x1I1 - Ti;
                 adcbuff[FFTRN-k] = sqrtf(Tr * Tr + Ti * Ti);
-//                _nop();
             }
         }
 
-        for (k = 0; k < FFTRN; k++)//32¸öÑ­»·£¬¼ÆËã64µã
+        for (k = 0; k < FFTRN; k++) // 32ä¸ªå¾ªç¯ï¼Œè®¡ç®—64ç‚¹
         {
             adcbuff[k] = adcbuff[k]/FFTRN;
         }
 }
+
 void HammingWindow()
 {
     unsigned char i=0;
@@ -246,10 +246,27 @@ void HammingWindow()
         adcbuff[i]=adcbuff[i]*(0.54f-0.46f*cos_fft128(i));
     }
 }
+
+// è®¡ç®—THD
 void THD()
 {
-    thd = sqrtf(adcbuff[8]*adcbuff[8] + adcbuff[12]*adcbuff[12] + adcbuff[16]*adcbuff[16] + adcbuff[20]*adcbuff[20]) * 100 / adcbuff[4];
+    int bas = adcbuff[1], i, item = 1;
+  
+    // éå†æ‰¾åˆ°é™¤ç›´æµåˆ†é‡å¤–çš„æœ€å¤§å€¼ä¸‹æ ‡ï¼Œä¸ºä¸€æ¬¡è°æ³¢
+    // å¯èƒ½ä¼šä¸å‡†ç¡®ï¼Œéœ€è¦è§†å®é™…æƒ…å†µè€Œå®š
+    for(i=1; i<64; i++) 
+    {
+        if(adcbuff[i] > bas)
+        {
+            bas = adcbuff[i];
+            item = i;
+        }
+    }
+    // è®¡ç®—äº”æ¬¡è°æ³¢å¤±çœŸåº¦ * 100
+    thd = sqrtf(adcbuff[item*2]*adcbuff[item*2] + adcbuff[item*3]*adcbuff[item*3] + adcbuff[item*4]*adcbuff[item*4] + adcbuff[item*5]*adcbuff[item*5]) * 100 / adcbuff[item];
 }
+
+// è®¡ç®—å³°å³°å€¼
 void get_vpp()
 {
     int i = 0;

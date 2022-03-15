@@ -2,57 +2,42 @@
 #include "msp.h"
 
 extern int adcbuff[128];
+
+
+// å¼€å§‹ADCè½¬æ¢
 void StartADCConvert(void)
 {
-      /*¿ªÊ¼×ª»»*/
-      ADC10CTL0 |= ADC10SC|ENC;
-      /*µÈ´ý×ª»»Íê³É*/
-      while(ADC10CTL1&ADC10BUSY);
-
-}
-/*ADCÅäÖÃ*/
-void InitADC(void){
-
-    /*ÉèÖÃADCÊ±ÖÓMCLK*/
-      ADC10CTL1 |= ADC10SSEL_0;
-      /*ADC 2·ÖÆµ*/
-      ADC10CTL1 |= ADC10DIV_7;
-      /*ÉèÖÃADC»ù×¼Ô´*/
-      ADC10CTL0 |= SREF_0;
-      /*ÉèÖÃADC²ÉÑù±£³ÖÊ±¼ä16CLK*/
-      ADC10CTL0 |= ADC10SHT_0;
-      /*ÉèÖÃADC²ÉÑùÂÊ200k*/
-      ADC10CTL0 |= ADC10SR;
-      /*ADC»ù×¼Ñ¡Ôñ2.5V*/
-      ADC10CTL0 |= REF2_5V;
-      /*¿ªÆô»ù×¼*/
-      ADC10CTL0 |= REFON;
-      /*Ñ¡ÔñADCÊäÈëÍ¨µÀA4*/
-      ADC10CTL1 |= INCH_0;
-      /*ÔÊÐíA4Ä£ÄâÊäÈë*/
-      ADC10AE0 |= 0;
-
-      /*DTC´«ÊäÄ£Ê½*/
-      ADC10DTC0 |= ADC10CT;
-      /*´«Êä´ÎÊý*/
-      ADC10DTC1 = 128;
-      /*ÆðÊ¼µØÖ·*/
-      ADC10SA = (int)(adcbuff);
-
-      /*¿ªÆôADC*/
-      ADC10CTL0 |= ADC10ON;
-
-      /*ÔÊÐí×ª»»*/
-      ADC10CTL0 |= ENC;
+      ADC10CTL0 |= ADC10SC|ENC; // å¼€å§‹è½¬æ¢
+      while(ADC10CTL1&ADC10BUSY); // ç­‰å¾…è½¬æ¢å®Œæˆ
 }
 
-void InitSystemClock(void){
-    /*ÅäÖÃDCOÎª1MHz*/
-    DCOCTL = CALDCO_8MHZ;
+
+// ADCé…ç½®
+void InitADC(void)
+{
+      ADC10CTL1 |= ADC10SSEL_0; // ADCæ—¶é’Ÿæºé€‰æ‹©ADC10OSC
+      ADC10CTL1 |= ADC10DIV_7; // 8åˆ†é¢‘
+      ADC10CTL0 |= SREF_0; // åŸºå‡†æºé€‰æ‹©
+      ADC10CTL0 |= ADC10SHT_0; // é‡‡æ ·ä¿æŒ4clk
+      ADC10CTL0 |= ADC10SR; // é‡‡æ ·çŽ‡200k
+      ADC10CTL0 |= REF2_5V; // 2.5VåŸºå‡†
+      ADC10CTL0 |= REFON; // å¼€å¯2.5VåŸºå‡†
+      ADC10CTL1 |= INCH_0; // è¾“å…¥é€šé“é€‰æ‹©P1.0
+      ADC10AE0 |= 0; // å…è®¸æ¨¡æ‹Ÿè¾“å…¥
+      ADC10DTC0 |= ADC10CT; // DTCä¼ è¾“æ¨¡å¼
+      ADC10DTC1 = 128; // ä¼ è¾“æ¬¡æ•°
+      ADC10SA = (int)(adcbuff); // æ•°ç»„èµ·å§‹åœ°å€
+
+      ADC10CTL0 |= ADC10ON; // å¼€å¯ADC
+      ADC10CTL0 |= ENC; // å…è®¸è½¬æ¢
+}
+
+
+// ç³»ç»Ÿæ—¶é’Ÿé…ç½®
+void InitSystemClock(void)
+{
+    DCOCTL = CALDCO_8MHZ; // é…ç½®DCOä¸º8MHz
     BCSCTL1 = CALBC1_8MHZ;
-    /*ÅäÖÃSMCLKµÄÊ±ÖÓÔ´ÎªDCO*/
-    BCSCTL2 &= ~SELS;
-    /*SMCLKµÄ·ÖÆµÏµÊýÖÃÎª1*/
-    BCSCTL2 &= ~(DIVS0 | DIVS1);
+    BCSCTL2 &= ~SELS; // SMCLKé€‰æ‹©DCO
+    BCSCTL2 &= ~(DIVS0 | DIVS1); // 1åˆ†é¢‘
 }
-

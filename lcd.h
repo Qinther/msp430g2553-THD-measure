@@ -1,6 +1,18 @@
 #ifndef LCD_H_
 #define LCD_H_
 
+// LCD与msp430g2553的接口配置
+/*
+* ROM_IN -> P1.1
+* ROM_OUT -> P1.2
+* ROM_SCK -> P1.3
+* ROM_CS -> P1.4
+* SCLK -> P2.0
+* SDA -> P2.1
+* RS -> P2.2
+* RESET -> P2.3
+* CS -> P2.4
+*/
 #define ROM_IN_H P1OUT|=BIT1;
 #define ROM_IN_L P1OUT&=~BIT1;
 #define ROM_OUT_H P1OUT|=BIT2;
@@ -27,15 +39,11 @@ void transfer_command_lcd(int data1);
 void transfer_data_lcd(int data1);
 void clear_screen();
 void lcd_address(unsigned int page,unsigned int column);
-void display_128x64(unsigned char *dp);
 void display_GB2312_string(unsigned char page,unsigned char column,unsigned char *text);
-void display_graphic_16x16(unsigned char page,unsigned char column,unsigned char *dp);
 void get_and_write_16x16(unsigned long fontaddr,unsigned char page,unsigned char column);
 void get_and_write_8x16(unsigned long fontaddr,unsigned char page,unsigned char column);
 static unsigned char get_data_from_ROM();
 void send_command_to_ROM( unsigned char datu );
-void display_string_5x8(unsigned char page,unsigned char column,unsigned char *text);
-void get_and_write_5x8(unsigned char page,unsigned char column);
 void display_float(unsigned int page, unsigned int column, float num);
 
 #endif /* LCD_H_ */

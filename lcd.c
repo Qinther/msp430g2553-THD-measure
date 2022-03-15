@@ -1,43 +1,52 @@
 #include <msp430.h>
 #include "lcd.h"
 
+
 unsigned long fontaddr=0;
 
+// åˆå§‹åŒ–LCD
 void initial_lcd()
 {
-    RESET_L; //µÍµçÆ½¸´Î»
+    RESET_L; // ä½ç”µå¹³å¤ä½
     delay(100);
-    RESET_H; //¸´Î»Íê±Ï
+    RESET_H; // å¤ä½å®Œæ¯•
     delay(100);
-    transfer_command_lcd(0xe2); //Èí¸´Î»
+    transfer_command_lcd(0xe2); // è½¯å¤ä½
     delay(5);
-    transfer_command_lcd(0x2c); //ÉıÑ¹²½¾Û 1
+    transfer_command_lcd(0x2c); // å‡å‹æ­¥èš 1
     delay(50);
-    transfer_command_lcd(0x2e); //ÉıÑ¹²½¾Û 2
+    transfer_command_lcd(0x2e); // å‡å‹æ­¥èš 2
     delay(50);
-    transfer_command_lcd(0x2f); //ÉıÑ¹²½¾Û 3
+    transfer_command_lcd(0x2f); // å‡å‹æ­¥èš 3
     delay(5);
-    transfer_command_lcd(0x23); //´Öµ÷¶Ô±È¶È£¬¿ÉÉèÖÃ·¶Î§ 0x20¡«0x27
-    transfer_command_lcd(0x81); //Î¢µ÷¶Ô±È¶È
-    transfer_command_lcd(0x28); //Î¢µ÷¶Ô±È¶ÈµÄÖµ£¬¿ÉÉèÖÃ·¶Î§ 0x00¡«0x3f
-    transfer_command_lcd(0xa2); //1/9 Æ«Ñ¹±È£¨bias£©
-    transfer_command_lcd(0xc8); //ĞĞÉ¨ÃèË³Ğò£º´ÓÉÏµ½ÏÂ
-    transfer_command_lcd(0xa0); //ÁĞÉ¨ÃèË³Ğò£º´Ó×óµ½ÓÒ
-    transfer_command_lcd(0x40); //ÆğÊ¼ĞĞ£ºµÚÒ»ĞĞ¿ªÊ¼
-    transfer_command_lcd(0xaf); //¿ªÏÔÊ¾
+    transfer_command_lcd(0x23); // ç²—è°ƒå¯¹æ¯”åº¦ï¼Œå¯è®¾ç½®èŒƒå›´ 0x20ï½0x27
+    transfer_command_lcd(0x81); // å¾®è°ƒå¯¹æ¯”åº¦
+    transfer_command_lcd(0x28); // å¾®è°ƒå¯¹æ¯”åº¦çš„å€¼ï¼Œå¯è®¾ç½®èŒƒå›´ 0x00ï½0x3f
+    transfer_command_lcd(0xa2); // 1/9 åå‹æ¯”ï¼ˆbiasï¼‰
+    transfer_command_lcd(0xc8); // è¡Œæ‰«æé¡ºåºï¼šä»ä¸Šåˆ°ä¸‹
+    transfer_command_lcd(0xa0); // åˆ—æ‰«æé¡ºåºï¼šä»å·¦åˆ°å³
+    transfer_command_lcd(0x40); // èµ·å§‹è¡Œï¼šç¬¬ä¸€è¡Œå¼€å§‹
+    transfer_command_lcd(0xaf); // å¼€æ˜¾ç¤º
 }
+
+// å»¶è¿Ÿå‡½æ•°ï¼Œå…·ä½“å»¶è¿Ÿæ—¶é—´ä¸æ—¶é’Ÿæºé€‰æ‹©æœ‰å…³
 void delay(int n_ms)
 {
     int j,k;
     for(j=0;j<n_ms;j++)
     for(k=0;k<110;k++);
 }
+
+
+// å»¶è¿Ÿå‡½æ•°ï¼Œå…·ä½“å»¶è¿Ÿæ—¶é—´ä¸æ—¶é’Ÿæºé€‰æ‹©æœ‰å…³
 void delay_us(int n_us)
 {
     int j,k;
     for(j=0;j<n_us;j++)
     for(k=0;k<1;k++);
 }
+
+// å‘LCDé€å­—èŠ‚å†™å…¥å‘½ä»¤
 void transfer_command_lcd(int data1)
 {
     char i;
@@ -46,7 +55,7 @@ void transfer_command_lcd(int data1)
     for(i=0;i<8;i++)
     {
         SCLK_L;
-        //delay_us(10); //¼ÓÉÙÁ¿ÑÓÊ±
+        // delay_us(10); // åŠ å°‘é‡å»¶æ—¶
         if(data1&0x80)
         {
             SDA_H;
@@ -56,11 +65,13 @@ void transfer_command_lcd(int data1)
             SDA_L;
         }
         SCLK_H;
-        //delay_us(10); //¼ÓÉÙÁ¿ÑÓÊ±
+        // delay_us(10); // åŠ å°‘é‡å»¶æ—¶
         data1=data1<<=1;
     }
     CS_H;
 }
+
+// å‘LCDé€å­—èŠ‚å†™å…¥æ•°æ®
 void transfer_data_lcd(int data1)
 {
     char i;
@@ -82,6 +93,8 @@ void transfer_data_lcd(int data1)
     }
     CS_H;
 }
+
+// æ¸…å±
 void clear_screen()
 {
     unsigned char i,j;
@@ -96,26 +109,18 @@ void clear_screen()
         }
     }
 }
+
+// å®šä½å…‰æ ‡ä½ç½®
 void lcd_address(unsigned int page,unsigned int column)
 {
     column=column-0x01;
-    transfer_command_lcd(0xb0+page-1); //ÉèÖÃÒ³µØÖ·£¬Ã¿ 8 ĞĞÎªÒ»Ò³£¬È«ÆÁ¹² 64 ĞĞ£¬±»·Ö³É 8 Ò³
-    transfer_command_lcd(0x10+(column>>4&0x0f)); //ÉèÖÃÁĞµØÖ·µÄ¸ß 4 Î»
-    transfer_command_lcd(column&0x0f); //ÉèÖÃÁĞµØÖ·µÄµÍ 4 Î»
+    transfer_command_lcd(0xb0+page-1); // è®¾ç½®é¡µåœ°å€ï¼Œæ¯ 8 è¡Œä¸ºä¸€é¡µï¼Œå…¨å±å…± 64 è¡Œï¼Œè¢«åˆ†æˆ 8 é¡µ
+    transfer_command_lcd(0x10+(column>>4&0x0f)); // è®¾ç½®åˆ—åœ°å€çš„é«˜ 4 ä½
+    transfer_command_lcd(column&0x0f); // è®¾ç½®åˆ—åœ°å€çš„ä½ 4 ä½
 }
-void display_128x64(unsigned char *dp)
-{
-    unsigned int i,j;
-    for(j=0;j<8;j++)
-    {
-        lcd_address(j+1,1);
-        for (i=0;i<128;i++)
-        {
-            transfer_data_lcd(*dp); //Ğ´Êı¾İµ½ LCD,Ã¿Ğ´ÍêÒ»¸ö 8 Î»µÄÊı¾İºóÁĞµØÖ·×Ô¶¯¼Ó 1
-            dp++;
-        }
-    }
-}
+
+// æ˜¾ç¤ºGB2312å­—ç¬¦
+// 16x16
 void display_GB2312_string(unsigned char page,unsigned char column,unsigned char *text)
 {
     unsigned char i= 0;
@@ -126,7 +131,7 @@ void display_GB2312_string(unsigned char page,unsigned char column,unsigned char
             fontaddr = (text[i]- 0xb0)*94;
             fontaddr += (text[i+1]-0xa1)+846;
             fontaddr = (unsigned long)(fontaddr*32);
-            get_and_write_16x16(fontaddr,page,column); //´ÓÖ¸¶¨µØÖ·¶Á³öÊı¾İĞ´µ½Òº¾§ÆÁÖ¸¶¨£¨page,column)×ù±êÖĞ
+            get_and_write_16x16(fontaddr,page,column); // ä»æŒ‡å®šåœ°å€è¯»å‡ºæ•°æ®å†™åˆ°æ¶²æ™¶å±æŒ‡å®šï¼ˆpage,column)åº§æ ‡ä¸­
             i+=2;
             column+=16;
         }
@@ -136,7 +141,7 @@ void display_GB2312_string(unsigned char page,unsigned char column,unsigned char
             fontaddr += (text[i+1]-0xa1);
             fontaddr = (unsigned long)(fontaddr*32);
 
-            get_and_write_16x16(fontaddr,page,column); //´ÓÖ¸¶¨µØÖ·¶Á³öÊı¾İĞ´µ½Òº¾§ÆÁÖ¸¶¨£¨page,column)×ù±êÖĞ
+            get_and_write_16x16(fontaddr,page,column); // ä»æŒ‡å®šåœ°å€è¯»å‡ºæ•°æ®å†™åˆ°æ¶²æ™¶å±æŒ‡å®šï¼ˆpage,column)åº§æ ‡ä¸­
             i+=2;
             column+=16;
         }
@@ -145,7 +150,7 @@ void display_GB2312_string(unsigned char page,unsigned char column,unsigned char
             fontaddr = (text[i]- 0x20);
             fontaddr = (unsigned long)(fontaddr*16);
             fontaddr = (unsigned long)(fontaddr+0x3cf80);
-            get_and_write_8x16(fontaddr,page,column); //´ÓÖ¸¶¨µØÖ·¶Á³öÊı¾İĞ´µ½Òº¾§ÆÁÖ¸¶¨£¨page,column)×ù±êÖĞ
+            get_and_write_8x16(fontaddr,page,column); // ä»æŒ‡å®šåœ°å€è¯»å‡ºæ•°æ®å†™åˆ°æ¶²æ™¶å±æŒ‡å®šï¼ˆpage,column)åº§æ ‡ä¸­
             i+=1;
             column+=8;
         }
@@ -153,91 +158,50 @@ void display_GB2312_string(unsigned char page,unsigned char column,unsigned char
             i++;
     }
 }
-void display_string_5x8(unsigned char page,unsigned char column,unsigned char *text)
-{
-    unsigned char i= 0;
-    while((text[i]>0x00))
-    {
-        if((text[i]>=0x20) &&(text[i]<=0x7e))
-        {
-            fontaddr = (text[i]- 0x20);
-            fontaddr = (unsigned long)(fontaddr*8);
-            fontaddr = (unsigned long)(fontaddr+0x3bfc0);
-            get_and_write_5x8(page,column);
-            i+=1;
-            column+=6;
-        }
-        else
-            i++;
-    }
-}
-void get_and_write_5x8(unsigned char page,unsigned char column)
-{
-    unsigned char i,disp_data;
-    ROM_CS_L;
-    send_command_to_ROM(0x03);
-    send_command_to_ROM((fontaddr&0xff0000)>>16); //µØÖ·µÄ¸ß 8 Î»,¹² 24 Î»
-    send_command_to_ROM((fontaddr&0xff00)>>8); //µØÖ·µÄÖĞ 8 Î»,¹² 24 Î»
-    send_command_to_ROM(fontaddr&0xff); //µØÖ·µÄµÍ 8 Î»,¹² 24 Î»
-    lcd_address(page,column);
-    for(i=0; i<5; i++ )
-    {
-        disp_data=get_data_from_ROM();
-        transfer_data_lcd(disp_data); //Ğ´Êı¾İµ½ LCD,Ã¿Ğ´Íê 1 ×Ö½ÚµÄÊı¾İºóÁĞµØÖ·×Ô¶¯¼Ó 1
-    }
-    ROM_CS_H;
-}
-void display_graphic_16x16(unsigned char page,unsigned char column,unsigned char *dp)
-{
-    unsigned int i,j;
-    for(j=0;j<2;j++)
-    {
-        lcd_address(page+j,column);
-        for (i=0;i<16;i++)
-        {
-            transfer_data_lcd(*dp); //Ğ´Êı¾İµ½ LCD,Ã¿Ğ´ÍêÒ»¸ö 8 Î»µÄÊı¾İºóÁĞµØÖ·×Ô¶¯¼Ó 1
-            dp++;
-        }
-    }
-}
+
+// ä»å­—åº“ä¸­è·å–æ•°æ®å¹¶å†™å…¥LCD
 void get_and_write_16x16(unsigned long fontaddr,unsigned char page,unsigned char column)
 {
     unsigned char i,j,disp_data;
     ROM_CS_L;
     send_command_to_ROM(0x03);
-    send_command_to_ROM((fontaddr&0xff0000)>>16); //µØÖ·µÄ¸ß 8 Î»,¹² 24 Î»
-    send_command_to_ROM((fontaddr&0xff00)>>8); //µØÖ·µÄÖĞ 8 Î»,¹² 24 Î»
-    send_command_to_ROM(fontaddr&0xff); //µØÖ·µÄµÍ 8 Î»,¹² 24 Î»
+    send_command_to_ROM((fontaddr&0xff0000)>>16); // åœ°å€çš„é«˜ 8 ä½,å…± 24 ä½
+    send_command_to_ROM((fontaddr&0xff00)>>8); // åœ°å€çš„ä¸­ 8 ä½,å…± 24 ä½
+    send_command_to_ROM(fontaddr&0xff); // åœ°å€çš„ä½ 8 ä½,å…± 24 ä½
     for(j=0;j<2;j++)
     {
         lcd_address(page+j,column);
         for(i=0; i<16; i++ )
         {
             disp_data=get_data_from_ROM();
-            transfer_data_lcd(disp_data); //Ğ´Êı¾İµ½ LCD,Ã¿Ğ´Íê 1 ×Ö½ÚµÄÊı¾İºóÁĞµØÖ·×Ô¶¯¼Ó 1
+            transfer_data_lcd(disp_data); // å†™æ•°æ®åˆ° LCD,æ¯å†™å®Œ 1 å­—èŠ‚çš„æ•°æ®ååˆ—åœ°å€è‡ªåŠ¨åŠ  1
         }
     }
     ROM_CS_H;
 }
+
+// ä»å­—åº“ä¸­è·å–æ•°æ®å¹¶å†™å…¥LCD
 void get_and_write_8x16(unsigned long fontaddr,unsigned char page,unsigned char column)
 {
     unsigned char i,j,disp_data;
     ROM_CS_L;
     send_command_to_ROM(0x03);
-    send_command_to_ROM((fontaddr&0xff0000)>>16); //µØÖ·µÄ¸ß 8 Î»,¹² 24 Î»
-    send_command_to_ROM((fontaddr&0xff00)>>8); //µØÖ·µÄÖĞ 8 Î»,¹² 24 Î»
-    send_command_to_ROM(fontaddr&0xff); //µØÖ·µÄµÍ 8 Î»,¹² 24 Î»
+    send_command_to_ROM((fontaddr&0xff0000)>>16); // åœ°å€çš„é«˜ 8 ä½,å…± 24 ä½
+    send_command_to_ROM((fontaddr&0xff00)>>8); // åœ°å€çš„ä¸­ 8 ä½,å…± 24 ä½
+    send_command_to_ROM(fontaddr&0xff); // åœ°å€çš„ä½ 8 ä½,å…± 24 ä½
     for(j=0;j<2;j++)
     {
         lcd_address(page+j,column);
         for(i=0; i<8; i++ )
         {
             disp_data=get_data_from_ROM();
-            transfer_data_lcd(disp_data); //Ğ´Êı¾İµ½ LCD,Ã¿Ğ´Íê 1 ×Ö½ÚµÄÊı¾İºóÁĞµØÖ·×Ô¶¯¼Ó 1
+            transfer_data_lcd(disp_data); //å†™æ•°æ®åˆ° LCD,æ¯å†™å®Œ 1 å­—èŠ‚çš„æ•°æ®ååˆ—åœ°å€è‡ªåŠ¨åŠ  1
         }
     }
     ROM_CS_H;
 }
+
+// ä»å­—åº“ä¸­è·å–æ•°æ®
 static unsigned char get_data_from_ROM()
 {
     unsigned char i;
@@ -255,6 +219,8 @@ static unsigned char get_data_from_ROM()
     }
     return(ret_data);
 }
+
+// å‘å­—åº“å‘é€å‘½ä»¤
 void send_command_to_ROM( unsigned char datu )
 {
     unsigned char i;
@@ -270,12 +236,12 @@ void send_command_to_ROM( unsigned char datu )
     }
 }
 
+// æ˜¾ç¤ºå°æ•°ï¼Œæ ¼å¼ä¸ºxx.xx
 void display_float(unsigned int page, unsigned int column, float num)
 {
     int temp,i;
     for(i=0;i<5;i++)
     {
-
         if(i == 2)
         {
             display_GB2312_string(page,i*8 + 1 + column,".");
@@ -284,7 +250,7 @@ void display_float(unsigned int page, unsigned int column, float num)
         {
             temp = num / 10;
             num = (num - temp*10) * 10;
-            if(i != 0 || temp != 0)
+            if(i != 0 || temp != 0) // é¦–ä½ä¸º0åˆ™ä¸æ˜¾ç¤º
             {
                 switch (temp)
                 {
